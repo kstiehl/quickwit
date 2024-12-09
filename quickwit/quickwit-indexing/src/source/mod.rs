@@ -62,6 +62,7 @@ mod ingest_api_source;
 mod kafka_source;
 #[cfg(feature = "kinesis")]
 mod kinesis;
+mod nats;
 #[cfg(feature = "pulsar")]
 mod pulsar_source;
 #[cfg(feature = "queue-sources")]
@@ -85,6 +86,7 @@ pub use gcp_pubsub_source::{GcpPubSubSource, GcpPubSubSourceFactory};
 pub use kafka_source::{KafkaSource, KafkaSourceFactory};
 #[cfg(feature = "kinesis")]
 pub use kinesis::kinesis_source::{KinesisSource, KinesisSourceFactory};
+use nats::NatsSourceFactory;
 use once_cell::sync::{Lazy, OnceCell};
 #[cfg(feature = "pulsar")]
 pub use pulsar_source::{PulsarSource, PulsarSourceFactory};
@@ -419,6 +421,7 @@ pub fn quickwit_supported_sources() -> &'static SourceLoader {
         source_factory.add_source(SourceType::Stdin, StdinSourceFactory);
         source_factory.add_source(SourceType::Vec, VecSourceFactory);
         source_factory.add_source(SourceType::Void, VoidSourceFactory);
+        source_factory.add_source(SourceType::Nats, NatsSourceFactory);
         source_factory
     })
 }

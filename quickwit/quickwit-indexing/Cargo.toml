@@ -62,6 +62,7 @@ quickwit-metastore = { workspace = true }
 quickwit-opentelemetry = { workspace = true }
 quickwit-proto = { workspace = true }
 quickwit-storage = { workspace = true }
+async-nats = "0.38.0"
 
 [features]
 gcp-pubsub = [

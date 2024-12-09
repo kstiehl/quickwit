@@ -252,6 +252,7 @@ fn get_sources_to_schedule(model: &ControlPlaneModel) -> Vec<SourceToSchedule> {
             | SourceParams::Kinesis(_)
             | SourceParams::PubSub(_)
             | SourceParams::Pulsar(_)
+            | SourceParams::Nats(_)
             | SourceParams::File(FileSourceParams::Notifications(_)) => {
                 sources.push(SourceToSchedule {
                     source_uid,

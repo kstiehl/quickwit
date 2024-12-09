@@ -57,9 +57,9 @@ use source_config::FileSourceParamsForSerde;
 pub use source_config::{
     CLI_SOURCE_ID, FileSourceMessageType, FileSourceNotification, FileSourceParams, FileSourceSqs,
     INGEST_API_SOURCE_ID, INGEST_V2_SOURCE_ID, KafkaSourceParams, KinesisSourceParams,
-    PubSubSourceParams, PulsarSourceAuth, PulsarSourceParams, RegionOrEndpoint, SourceConfig,
-    SourceInputFormat, SourceParams, TransformConfig, VecSourceParams, VoidSourceParams,
-    load_source_config_from_user_config, load_source_config_update,
+    NatsSourceParams, PubSubSourceParams, PulsarSourceAuth, PulsarSourceParams, RegionOrEndpoint,
+    SourceConfig, SourceInputFormat, SourceParams, TransformConfig, VecSourceParams,
+    VoidSourceParams, load_source_config_from_user_config, load_source_config_update,
 };
 use tracing::warn;
 
@@ -112,6 +112,7 @@ pub fn disable_ingest_v1() -> bool {
     KafkaSourceParams,
     KinesisSourceParams,
     MergePolicyConfig,
+    NatsSourceParams,
     PubSubSourceParams,
     PulsarSourceAuth,
     PulsarSourceParams,
@@ -226,7 +227,9 @@ impl ConfigFormat {
     }
 
     pub fn parse<T>(&self, payload: &[u8]) -> anyhow::Result<T>
-    where T: DeserializeOwned {
+    where
+        T: DeserializeOwned,
+    {
         match self {
             ConfigFormat::Json => {
                 let mut json_value: JsonValue =
