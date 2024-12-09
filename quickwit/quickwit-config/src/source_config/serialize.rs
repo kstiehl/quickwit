@@ -121,6 +121,7 @@ impl SourceConfigForSerialization {
             | SourceParams::IngestApi
             | SourceParams::IngestCli
             | SourceParams::Vec(_)
+            | SourceParams::Nats(_)
             | SourceParams::Void(_) => {}
         }
         match &self.source_params {
