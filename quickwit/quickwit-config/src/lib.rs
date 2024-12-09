@@ -58,10 +58,10 @@ use serde_json::Value as JsonValue;
 use source_config::FileSourceParamsForSerde;
 pub use source_config::{
     load_source_config_from_user_config, FileSourceMessageType, FileSourceNotification,
-    FileSourceParams, FileSourceSqs, KafkaSourceParams, KinesisSourceParams, PubSubSourceParams,
-    PulsarSourceAuth, PulsarSourceParams, RegionOrEndpoint, SourceConfig, SourceInputFormat,
-    SourceParams, TransformConfig, VecSourceParams, VoidSourceParams, CLI_SOURCE_ID,
-    INGEST_API_SOURCE_ID, INGEST_V2_SOURCE_ID,
+    FileSourceParams, FileSourceSqs, KafkaSourceParams, KinesisSourceParams, NatsSourceParams,
+    PubSubSourceParams, PulsarSourceAuth, PulsarSourceParams, RegionOrEndpoint, SourceConfig,
+    SourceInputFormat, SourceParams, TransformConfig, VecSourceParams, VoidSourceParams,
+    CLI_SOURCE_ID, INGEST_API_SOURCE_ID, INGEST_V2_SOURCE_ID,
 };
 use tracing::warn;
 
@@ -226,7 +226,9 @@ impl ConfigFormat {
     }
 
     pub fn parse<T>(&self, payload: &[u8]) -> anyhow::Result<T>
-    where T: DeserializeOwned {
+    where
+        T: DeserializeOwned,
+    {
         match self {
             ConfigFormat::Json => {
                 let mut json_value: JsonValue =
