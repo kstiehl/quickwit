@@ -89,6 +89,7 @@ impl SourceConfig {
             SourceParams::Stdin => serde_json::to_value(()),
             SourceParams::Vec(params) => serde_json::to_value(params),
             SourceParams::Void(params) => serde_json::to_value(params),
+            SourceParams::Nats(params) => serde_json::to_value(params),
         }
         .expect("`SourceParams` should be JSON serializable")
     }
@@ -234,6 +235,7 @@ pub enum SourceParams {
     Stdin,
     Vec(VecSourceParams),
     Void(VoidSourceParams),
+    Nats(NatsSourceParams),
 }
 
 impl SourceParams {
@@ -266,6 +268,7 @@ impl SourceParams {
             SourceParams::Stdin => SourceType::Stdin,
             SourceParams::Vec(_) => SourceType::Vec,
             SourceParams::Void(_) => SourceType::Void,
+            SourceParams::Nats(_) => SourceType::Nats,
         }
     }
 
@@ -477,6 +480,19 @@ impl PubSubSourceParams {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Hash, Serialize, Deserialize, utoipa::ToSchema)]
+#[serde(deny_unknown_fields)]
+pub struct NatsSourceParams {
+    /// Name of the stream that is used when subscribing.
+    pub stream: String,
+
+    /// Name of the endpoint used when subscribing.
+    pub endpoint: String,
+
+    /// Name of the consumer that is being used.
+    pub consumer: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Hash, Serialize, Deserialize, utoipa::ToSchema)]
 #[serde(rename_all = "lowercase")]
 pub enum RegionOrEndpoint {
     Region(String),
@@ -602,7 +618,9 @@ pub enum PulsarSourceAuth {
 
 // Deserializing a string into an pulsar uri.
 fn pulsar_uri<'de, D>(deserializer: D) -> Result<String, D::Error>
-where D: Deserializer<'de> {
+where
+    D: Deserializer<'de>,
+{
     let uri: String = Deserialize::deserialize(deserializer)?;
     let re: Regex = Regex::new(r"pulsar(\+ssl)?://.*").expect("regular expression should compile");
 
